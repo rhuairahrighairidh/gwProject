@@ -74,21 +74,21 @@ Detecting gravitational waves generates many technical challenges and thus the d
 			This step has two subsets. First the input (which in this case could be a sample form a time series, a real number) is converted to a binary vector. This is called encoding. It is not part of the core algorithm but it is necessary to convert the data type of the input into a format that can be used in subsequent steps. It follows that there are different encoders for different data types. For the case of real numbers as used in this project the ``scalar encoder'' was used. A value is converted to a binary vector with a section of on bits in a background of off bits. See fig \ref{fig:scalarEncoder} for details. The dimension of the vector and the number of on bits are parameters that do not change.
 			
 %:FIG:scalarEncoder
-%			\begin{figure}
-%				\centering
-%				\input{scalarEncoder.eps_tex}
-%				\caption{This shows how the scalar encoder maps real numbers to binary vectors. The binary vectors are represented by a line of boxes with white being $0$ and black being $1$. Each binary vector represents an interval of real numbers, so close numbers will map to the same vector. Note that this example only encodes numbers between $0$ and $10$. The width of the vector and the length of the on bits can be set as parameters. Note how numbers close together result in vectors with low Hamming distance.}
-%				\label{fig:scalarEncoder}
-%			\end{figure}
+			\begin{figure}
+				\centering
+				\input{scalarEncoder.eps_tex}
+				\caption{This shows how the scalar encoder maps real numbers to binary vectors. The binary vectors are represented by a line of boxes with white being $0$ and black being $1$. Each binary vector represents an interval of real numbers, so close numbers will map to the same vector. Note that this example only encodes numbers between $0$ and $10$. The width of the vector and the length of the on bits can be set as parameters. Note how numbers close together result in vectors with low Hamming distance.}
+				\label{fig:scalarEncoder}
+			\end{figure}
 			The next step is to convert this binary vector to a small set of active \emph{columns} contained in a larger set of inactive ones. Consider the structure in fig \ref{fig:structureDiagram}. The input binary vector from the previous step is input at the bottom. Then, in a process called spatial pooling, a set of columns become active (usually about 2\% of the total number of columns). This set of columns is the sparse distributed representation of the input vector. SDRs have many useful properties which explain why this step is necessary. For example to differentiate each SDR in a set of SDRs it is not necessary to compared each bit. It is possible to check only a few and still get a low probability of mismatch. This reduces the computations that must be performed. Further, this property allows superpositions of two or more SDRs to be formed by or-ing their bits together. The chance of two random SDR overlapping significantly is extremely small. This property proves useful in step 3 (section \ref{step3}).
 			
 %:FIG:structureDiagram
-%			\begin{figure}[h]
-%				\centering
-%				\input{structureDiagram.eps_tex}
-%				\caption{The internal structure of NuPIC. Note that every column has synapses connecting it to the input vector but only three of them have been drawn for clarity.}
-%				\label{fig:structureDiagram}
-%			\end{figure}
+			\begin{figure}[h]
+				\centering
+				\input{structureDiagram.eps_tex}
+				\caption{The internal structure of NuPIC. Note that every column has synapses connecting it to the input vector but only three of them have been drawn for clarity.}
+				\label{fig:structureDiagram}
+			\end{figure}
 			Referring back to the structure diagram (fig \ref{fig:structureDiagram}), each column has a number of synapses. connecting it to a large portion of the input space. Each synapse can be either active or inactive (on or off). An active synapse, permits the information to pass from the input to its column. In the spatial pooling process the following happens: For each column you add up the input bits connected to the column by active synapses. This results in an integer ``score'' for each column. Then, using this score, the top few columns are chosen to be made active. With the number chosen so that 2\% of columns become active. This process is illustrated in fig \ref{fig:algorithmDiagramStep1}. Each column can be thought of as corresponding to a ``pattern'' in the input. The set of active columns represents the input in terms of these ``patterns''. Much like a vector can be decomposed into a combination of orthogonal basis vectors.
 			
 			At this step learning occurs but it will not be covered here in detail. The learning process modifies the synapses. Each synapse has an associated real number named \emph{permanence}. This is modified during learning and it is this number that decides wether the synapse should be active or inactive.
@@ -109,13 +109,13 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\end{equation}
 
 %:FIG: algorithmDiagram
-%\begin{figure}[h]
-%	\centering
-%	\input{algorithmDiagramStep1.eps_tex}\hspace{1pc}%
-%	\begin{minipage}[b]{0.3\textwidth}
-%	\caption{Step 1: The number above each column indicates that columns score. The red boxes indicate the columns chosen to be active. Note that only the synapses for one column are shown here for clarity.}\label{fig:algorithmDiagramStep1}
-%	\end{minipage}
-%\end{figure}
+\begin{figure}[h]
+	\centering
+	\input{algorithmDiagramStep1.eps_tex}\hspace{1pc}%
+	\begin{minipage}[b]{0.3\textwidth}
+	\caption{Step 1: The number above each column indicates that columns score. The red boxes indicate the columns chosen to be active. Note that only the synapses for one column are shown here for clarity.}\label{fig:algorithmDiagramStep1}
+	\end{minipage}
+\end{figure}
 
 \begin{figure}[h]
 	\centering
