@@ -86,7 +86,7 @@ Detecting gravitational waves generates many technical challenges and thus the d
 %			\begin{figure}[h]
 %				\centering
 %				\input{structureDiagram.eps_tex}
-%				\caption{The internal structure of NuPIC}
+%				\caption{The internal structure of NuPIC. Note that every column has synapses connecting it to the input vector but only three of them have been drawn for clarity.}
 %				\label{fig:structureDiagram}
 %			\end{figure}
 			Referring back to the structure diagram (fig \ref{fig:structureDiagram}), each column has a number of synapses. connecting it to a large portion of the input space. Each synapse can be either active or inactive (on or off). An active synapse, permits the information to pass from the input to its column. In the spatial pooling process the following happens: For each column you add up the input bits connected to the column by active synapses. This results in an integer ``score'' for each column. Then, using this score, the top few columns are chosen to be made active. With the number chosen so that 2\% of columns become active. This process is illustrated in fig \ref{fig:algorithmDiagramStep1}. Each column can be thought of as corresponding to a ``pattern'' in the input. The set of active columns represents the input in terms of these ``patterns''. Much like a vector can be decomposed into a combination of orthogonal basis vectors.
@@ -101,11 +101,11 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\subsubsection{Step 3: Form a prediction based on the current input in the context of previous inputs}\label{step3}
 		The previous step referred to cells being in a \emph{predicting} state. This step calculates which cells should be in the predicting state. Note that the result here will be used in the next time step of the algorithm.
 		
-		Cells are chosen to become predicting in a manner similar to the way columns are chosen to be active in step 1. The details are not as important, but each cell has a collection of synapses (of the same type mentioned in step one) connecting it to other cells. A score for each cell is calculated by summing active cells that are connected by active synapses. If a score crosses a threshold then the cell becomes predicting. The result of steps 2 and 3 is that cell activations follow each other in learned sequences. Synapses are formed from a cell to other cells that commonly become active on the time step before. So if two inputs commonly follow one another, $A$ then $B$. Cells representing input $B$ will form connections to cells representing input $A$. Hence when input $A$ occurs, and the corresponding cells become active, the cells corresponding to input $B$ become predicting.
+		Cells are chosen to become predicting in a manner similar to the way columns are chosen to be active in step 1. The details are not as important, but each cell has a collection of synapses (of the same type mentioned in step one) connecting it to other cells. A score for each cell is calculated by summing active cells that are connected by active synapses. If a score crosses a threshold then the cell becomes predicting. The result of steps 2 and 3 is that cell activations follow each other in learnt sequences. Synapses are formed from a cell to other cells that commonly become active on the time step before. So if two inputs commonly follow one another, $A$ then $B$. Cells representing input $B$ will form connections to cells representing input $A$. Hence when input $A$ occurs, and the corresponding cells become active, the cells corresponding to input $B$ become predicting.
 		
 		This behaviour can be used to measure how unexpected an input is. The \emph{anomaly score} is calculated equation \ref{eq:anomaly}. Where $A_t$ is the set of active columns at time $t$ ($|A_t|$ is the size of this set), and $P_{t-1}$ is the set of columns with predicting cells at time step $t-1$.
 		\begin{equation}\label{eq:anomaly}
-		anomalyScore = \frac{| A_t-P_{t-1} \cap A_t |}{|A_t|}
+		\mathrm{anomalyScore} = \frac{| A_t| - |P_{t-1} \cap A_t |}{|A_t|}
 		\end{equation}
 
 %:FIG: algorithmDiagram
@@ -113,7 +113,7 @@ Detecting gravitational waves generates many technical challenges and thus the d
 %	\centering
 %	\input{algorithmDiagramStep1.eps_tex}\hspace{1pc}%
 %	\begin{minipage}[b]{0.3\textwidth}
-%	\caption{Algorithm Step 1: The number above each column indicates that columns score. The red boxes indicate the columns chosen to be active. Note that only the synapses for one column are shown here for clarity.}\label{fig:algorithmDiagramStep1}
+%	\caption{Step 1: The number above each column indicates that columns score. The red boxes indicate the columns chosen to be active. Note that only the synapses for one column are shown here for clarity.}\label{fig:algorithmDiagramStep1}
 %	\end{minipage}
 %\end{figure}
 
@@ -121,7 +121,7 @@ Detecting gravitational waves generates many technical challenges and thus the d
 	\centering
 	\includegraphics[width=0.53\textwidth]{algorithmDiagramStep2.eps}\hspace{1pc}%
 	\begin{minipage}[b]{0.3\textwidth}
-	\caption{Algorithm Step 2: Here the cells that were predicting and in an active column become active. Note that in the column with no predicting cells, all the cells became active.}\label{fig:algorithmDiagramStep2}
+	\caption{Step 2: Here the cells that were predicting and in an active column become active. Note that in the column with no predicting cells, all the cells became active.}\label{fig:algorithmDiagramStep2}
 	\end{minipage}
 \end{figure}
 
@@ -129,22 +129,76 @@ Detecting gravitational waves generates many technical challenges and thus the d
 	\centering
 	\includegraphics[width=0.53\textwidth]{algorithmDiagramStep3.eps}\hspace{1pc}%
 	\begin{minipage}[b]{0.3\textwidth}
-	\caption{Algorithm Step 3: This step calculates which cells to make predicting for the next time step. Note that none of the synapses for the cells have been shown.}\label{fig:algorithmDiagramStep3}
+	\caption{Step 3: This step calculates which cells to make predicting for the next time step. Note that none of the synapses for the cells have been shown.}\label{fig:algorithmDiagramStep3}
 	\end{minipage}
 \end{figure}
 
 		\subsubsection{The classifier}
 			The above three steps represent the core algorithm. However to form actual predictions of the next numerical input, a classifier is used. This classifier uses basic probabilistic methods to relate active cells to numerical input. As an aside, it is possible to generate a numerical prediction of the next input from the predicting cells. However Numenta has found that a classifier produces better results.
 						 
-	\subsection{Case study}
-		%See notebook for detailed plan.
-		This section provides a case study, showing the algorithm operating on some simple sine wave data. The data that will be used is shown in \ref{fig: exampleData}. Each step as detailed in the previous section will be shown for one sample in this data.
+	\subsection{Case study: A sine wave}
+		This section provides an example, showing the algorithm operating on some simple sine wave data. It will follow through the steps of the previous section showing the algorithm working at each step. The data that will be used was sampled from a sine wave at frequency of 30 samples per wave. It is shown in fig \ref{fig:exampleData}.
+		\begin{figure}
+		\centering
+		\makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{exampleDataPlot.pdf}}
+		\caption{\label{fig:exampleData}Data sampled from a sine wave. The arrow indicates sample 585.}
+		\end{figure}
 		
-		The algorithm starts in a newly initialised state where it has learned no patterns. Samples from the data are fed in and the algorithm gradually learns to predict the next sample. The time step shown will be number NUMBER, after the algorithm has learned the data to the point where predictions are exact.
+		The algorithm starts in a newly initialised state with no patterns learnt. The data is fed in sample by sample with the algorithm going through all the steps of the previous section on each iteration. Each sample, the algorithm adjusts its synapses and gradually learns to predict the pattern. In this case, with a pattern that repeats exactly, the predictions become exact. What follows is the algorithm operating on the 585\textsuperscript{th} sample, which is after the data has been learnt. (indicated by the arrow in fig \ref{fig:exampleData}).
 		
+		\subsubsection*{Step 1}
+			Sample number 585 is -0.2079. This is first encoded into a binary vector. This vector is set to be 242 bits wide with 21 on bits. Since the range of the sine wave is $\left[-1,1\right]$ the value -0.2079 corresponds to roughly the middle. This width of vector is typical in real use of the algorithm.
+			
+			The next step is to activate the columns. There are 2048 columns, which is again typical. Of these 2048, 40 are chosen to be active. The active columns have the indices:
+			\begin{table}[h]
+			\begin{center}
+			\begin{tabular}{cccccccccc}
+			20& 72& 114& 399& 415& 447& 534& 543& 550& 572\\
+			596& 664& 764& 774& 894& 982& 1003& 1050& 1079& 1088\\
+			1144& 1158& 1194& 1200& 1223& 1282& 1304& 1435& 1448& 1540\\
+			1593& 1680& 1777& 1832& 1856& 1900& 1965& 1974& 1981& 2019\\
+			\end{tabular}
+			\end{center}
+			\end{table}
+
+		\subsubsection*{Step 2}
+			Next, cells in each of the active column are chosen to be activated. In this case each column has 32 cells, which is the typical number. One cell in each column becomes active. Note that this value in the time series happens twice per wave. Once when the wave is going up, once when it is going down. Each will share the same set of active columns but have a different set of active cells.
+			This is were the anomaly score is calculated. It is the number of columns that become active but contained no predicting cells. It is expressed as a percentage between 0 and 1. In this case it is 0.
+		\subsubsection*{Step 3}
+			Next the predicting cells are calculated. This produces 40 of them, which is the same number of active cells. With more complicated branching data there will usually be more predicting cells. These predicting cells will be used to activate the cells for the next data sample.
 		
-	
+		The classifier then outputs the prediction for the next value, based on what cells are active. This is -0.4067 and is shown in fig \ref{fig:examplePrediction}. This completes one step of NuPIC. Next the process would be repeated for the next sample, number 586.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\textwidth]{examplePredictionPlot.pdf}
+			\caption{\label{fig:examplePrediction}The plot shows the predicted value of the 585\textsuperscript{th} data sample. The red marks are the data samples. The blue dots are the prediction at each step. The prediction for sample 585 is shown disconnected from previous predicted values.}
+		\end{figure}
+		
+		Figure \ref{fig:exampleResult} shows the whole process starting from the newly initialised algorithm. As NuPIC learns to predict the pattern the anomaly score drops. Also note that initially the classifier predicts the last seen value.
+		\begin{figure}
+			\centering
+			\makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{exampleResultPlot.pdf}}
+			\caption{\label{fig:exampleResult}These plots show the algorithm running over all the data from the start. The top plot shows the prediction made at each sample with the data samples overlaid. Red is the data, blue is the predicted values. The plot below shows the anomaly score calculated at each step.}
+		\end{figure}
+
+		
+	\subsection{Implementation details}
+		The experiments were carried out using the following:
+		\begin{itemize}
+		\item nupic software version 0.1.3dev commit a485fa5
+		\item 2048 columns
+		\item 32 cells per column
+		\item no swarming was used in setting the other parameters
+		\end{itemize}
+
 	\subsection{Noise characteristics}
+		Data from gravitational wave detectors has gaussian noise that disrupts the signal. This noise can cause problems for NuPIC. Consider the case where the algorithm has been learning on some data and learning has stabilised. The algorithm will have learnt the patterns as best it can. If more of this data is fed in with added gaussian noise, some points will be perturbed form their true position and will be different from what the algorithm expects them to be. This will cause the anomaly score to be high for those points. If there is enough noise then it will become impossible to tell if the algorithm recognises the data as the anomaly score will be continuously high. Since gravitational wave data is noisy it is useful to understand how NuPIC counteracts noise.
+		Some brief investigations were done. It was found that there are two main mechnisms:
+		\subsubsection*{Input overlap between similar values}
+			If a sample from a time series is perturbed from its true value by a small amount (relative to the amplitude of the signal) then the binary vector representation of the perturbed sample will be close to the binary vector representation of the true sample (with the closeness measured by hamming distance). This closeness will result in a similar set of columns becoming active, which results in a similar set of cells becoming active. So the algorithms internal representation of the perturbed input will be close (by hamming distance) to the representation of the true input.
+		\subsubsection*{Multiple predictions}
+			If the algorithm learns in a noisy environment then it will learn that the signal can take many values, not just the true values. For each sample it will form multiple predictions about what the next input will be. This gives a higher chance of the next input being predicted, even if it perturbed form the true value.
+			
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Glitch Identification}
 Intro/reasons for doing this (see big talk plan)
@@ -156,13 +210,16 @@ Problems
  - low noise tolerance (signal indistinguishable when noise)
  - Trial of training with noise
 Discussion - this is very simple but could be applied to other glitches / patterns
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Additional Investigations}
-\subsection{Gravitational Wave Detector Data}
-\subsection{Beta Classification}
+	\subsection{Gravitational Wave Detector Data}
+	\subsection{Beta Classification}
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
-Maybe some things like I had at the end of my talk - general issues in machine learning.
+	Maybe some things like I had at the end of my talk - general issues in machine learning.
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{References} 
 
