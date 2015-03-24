@@ -1,0 +1,60 @@
+%% Creator: Inkscape inkscape 0.91, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'structureDiagram.eps' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{356bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.44943817)%
+    \put(0,0){\includegraphics[width=\unitlength]{structureDiagram.eps}}%
+    \put(0.71910112,0.07154046){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29213483\unitlength}\raggedright Input Binary Vector\end{minipage}}}%
+    \put(0.58426966,0.43109103){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29213483\unitlength}\raggedright Column\end{minipage}}}%
+    \put(0.61797753,0.37491125){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29213483\unitlength}\raggedright Active Cell\end{minipage}}}%
+    \put(0.61797753,0.28502361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29213483\unitlength}\raggedright Predicting Cell\end{minipage}}}%
+    \put(0.70786517,0.18390001){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29213483\unitlength}\raggedright Active Synapse\end{minipage}}}%
+    \put(0.70786517,0.15019215){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29213483\unitlength}\raggedright Inactive Synapse\end{minipage}}}%
+  \end{picture}%
+\endgroup%
