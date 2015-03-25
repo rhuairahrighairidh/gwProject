@@ -2,6 +2,8 @@
 .ipynb_checkpoints
 
 run1/
+*.aux
+*.synctex.gz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

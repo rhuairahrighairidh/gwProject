@@ -200,16 +200,42 @@ Detecting gravitational waves generates many technical challenges and thus the d
 			If the algorithm learns in a noisy environment then it will learn that the signal can take many values, not just the true values. For each sample it will form multiple predictions about what the next input will be. This gives a higher chance of the next input being predicted, even if it perturbed form the true value.
 			
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Glitch Identification}
-Intro/reasons for doing this (see big talk plan)
-The hypothesis - how I imagined this method working (see big talk plan)
-details - the experiment and the precise setup details
-Results - The final Graph
-Problems
- - overgeneralisation - and consequent investigation
- - low noise tolerance (signal indistinguishable when noise)
- - Trial of training with noise
-Discussion - this is very simple but could be applied to other glitches / patterns
+\section{Transient Identfication}
+	This purpose of this section was to investigate wether NuPIC could identify a learned transient embedded in a background of noise. The idea behind this is that if NuPIC was trained on transients of interest, then it could pick them out of a long duration signal.
+	\subsection{Hypothesis}
+		The process was as follows. The algorithm would be trained on a sample transient. After training the learning would be turned off. Then data would be fed in, containing the trained transients and other regions of noise. Error metrics describing how well NuPIC recognised the data could be extracted. These would be high for the noisy regions and low for trained transients that the algorithm recognises. Disabling the learning would stop the algorithm from learning any more patterns in the data. The error metrics used were an average error between the predicted signal and the actual data and the anomaly score detailed in equation \ref{eq:anomaly}.
+		
+	\subsection{description}
+		The algorithm was trained on a sine gaussian repeatedly until it had learnt the signal. Learning was then disabled. Testing was carried out by adding gaussian noise to a signal and calculating average error metrics.The signals used were the flat repeating 0 (of the same length as the training data (20 samples)) and the training data.
+		The following process was related for each signal. Levels for the noise to add to the signal were chosen to be 0.00, 0.05 ,0.10 ,0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, with each being the standard deviation of the generated noise. For each level, Gaussian noise was generated and added to the signal. The signal plus noise was fed into the algorithm. An average error metric was calculated from the predictions generated. An average anomaly score was also calculated. This was repeated with another instance of noise (of the same standard deviation) 100 times and the average errors and average anomaly scores were averaged. This resulted in one average error and one average anomaly score (with error bars for these values) for one level of the added noise. This process was repeated for each level of noise listed above and the results plotted. 
+		The training data used was a sine gaussian with the following attributes. phase=5.6 rad,frequency=2Hz,sampleRate=1/32, duration 1s. As shown in fig \ref{fig:trimmedGlitch1}.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\textwidth]{trimmedGlitch1Plot.pdf}
+			\caption{\label{fig:trimmedGlitch1}The training data.}
+		\end{figure}
+		
+		The algorithm was trained by running it through the data 200 times. This value was chosen to be after the average change in synapses slowed. Learning was then disabled.
+		
+		The algorithm was tested on two separate test data. The first was 0 mean Gaussian noise 
+	\subsection{Results}
+		
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{averageErrorPlot.pdf}
+			\caption{\label{fig:averageError}The average anomaly score calculated when testing on two different signals (flat signal and the training data) for different levels of added noise.}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{averageAnomalyPlot.pdf}
+			\caption{\label{fig:averageError}The average error calculated when testing on two different signals (flat signal and the training data) for different levels of added noise.}
+		\end{figure}
+		
+	\subsection{Issues}
+		 - overgeneralisation - and consequent investigation
+		 - low noise tolerance (signal indistinguishable when noise)
+		 
+	\subsection{Discussion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Additional Investigations}
