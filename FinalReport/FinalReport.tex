@@ -74,21 +74,21 @@ Detecting gravitational waves generates many technical challenges and thus the d
 			This step has two subsets. First the input (which in this case could be a sample form a time series, a real number) is converted to a binary vector. This is called encoding. It is not part of the core algorithm but it is necessary to convert the data type of the input into a format that can be used in subsequent steps. It follows that there are different encoders for different data types. For the case of real numbers as used in this project the ``scalar encoder'' was used. A value is converted to a binary vector with a section of on bits in a background of off bits. See fig \ref{fig:scalarEncoder} for details. The dimension of the vector and the number of on bits are parameters that do not change.
 			
 %:FIG:scalarEncoder
-			\begin{figure}
-				\centering
-				\input{scalarEncoder.eps_tex}
-				\caption{This shows how the scalar encoder maps real numbers to binary vectors. The binary vectors are represented by a line of boxes with white being $0$ and black being $1$. Each binary vector represents an interval of real numbers, so close numbers will map to the same vector. Note that this example only encodes numbers between $0$ and $10$. The width of the vector and the length of the on bits can be set as parameters. Note how numbers close together result in vectors with low Hamming distance.}
-				\label{fig:scalarEncoder}
-			\end{figure}
+%			\begin{figure}
+%				\centering
+%				\input{scalarEncoder.eps_tex}
+%				\caption{This shows how the scalar encoder maps real numbers to binary vectors. The binary vectors are represented by a line of boxes with white being $0$ and black being $1$. Each binary vector represents an interval of real numbers, so close numbers will map to the same vector. Note that this example only encodes numbers between $0$ and $10$. The width of the vector and the length of the on bits can be set as parameters. Note how numbers close together result in vectors with low Hamming distance.}
+%				\label{fig:scalarEncoder}
+%			\end{figure}
 			The next step is to convert this binary vector to a small set of active \emph{columns} contained in a larger set of inactive ones. Consider the structure in fig \ref{fig:structureDiagram}. The input binary vector from the previous step is input at the bottom. Then, in a process called spatial pooling, a set of columns become active (usually about 2\% of the total number of columns). This set of columns is the sparse distributed representation of the input vector. SDRs have many useful properties which explain why this step is necessary. For example to differentiate each SDR in a set of SDRs it is not necessary to compared each bit. It is possible to check only a few and still get a low probability of mismatch. This reduces the computations that must be performed. Further, this property allows superpositions of two or more SDRs to be formed by or-ing their bits together. The chance of two random SDR overlapping significantly is extremely small. This property proves useful in step 3 (section \ref{step3}).
 			
 %:FIG:structureDiagram
-			\begin{figure}[h]
-				\centering
-				\input{structureDiagram.eps_tex}
-				\caption{The internal structure of NuPIC. Note that every column has synapses connecting it to the input vector but only three of them have been drawn for clarity.}
-				\label{fig:structureDiagram}
-			\end{figure}
+%			\begin{figure}[h]
+%				\centering
+%				\input{structureDiagram.eps_tex}
+%				\caption{The internal structure of NuPIC. Note that every column has synapses connecting it to the input vector but only three of them have been drawn for clarity.}
+%				\label{fig:structureDiagram}
+%			\end{figure}
 			Referring back to the structure diagram (fig \ref{fig:structureDiagram}), each column has a number of synapses. connecting it to a large portion of the input space. Each synapse can be either active or inactive (on or off). An active synapse, permits the information to pass from the input to its column. In the spatial pooling process the following happens: For each column you add up the input bits connected to the column by active synapses. This results in an integer ``score'' for each column. Then, using this score, the top few columns are chosen to be made active. With the number chosen so that 2\% of columns become active. This process is illustrated in fig \ref{fig:algorithmDiagramStep1}. Each column can be thought of as corresponding to a ``pattern'' in the input. The set of active columns represents the input in terms of these ``patterns''. Much like a vector can be decomposed into a combination of orthogonal basis vectors.
 			
 			At this step learning occurs but it will not be covered here in detail. The learning process modifies the synapses. Each synapse has an associated real number named \emph{permanence}. This is modified during learning and it is this number that decides wether the synapse should be active or inactive.
@@ -109,13 +109,13 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\end{equation}
 
 %:FIG: algorithmDiagram
-\begin{figure}[h]
-	\centering
-	\input{algorithmDiagramStep1.eps_tex}\hspace{1pc}%
-	\begin{minipage}[b]{0.3\textwidth}
-	\caption{Step 1: The number above each column indicates that columns score. The red boxes indicate the columns chosen to be active. Note that only the synapses for one column are shown here for clarity.}\label{fig:algorithmDiagramStep1}
-	\end{minipage}
-\end{figure}
+%\begin{figure}[h]
+%	\centering
+%	\input{algorithmDiagramStep1.eps_tex}\hspace{1pc}%
+%	\begin{minipage}[b]{0.3\textwidth}
+%	\caption{Step 1: The number above each column indicates that columns score. The red boxes indicate the columns chosen to be active. Note that only the synapses for one column are shown here for clarity.}\label{fig:algorithmDiagramStep1}
+%	\end{minipage}
+%\end{figure}
 
 \begin{figure}[h]
 	\centering
@@ -201,24 +201,36 @@ Detecting gravitational waves generates many technical challenges and thus the d
 			
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Transient Identfication}
-	This purpose of this section was to investigate wether NuPIC could identify a learned transient embedded in a background of noise. The idea behind this is that if NuPIC was trained on transients of interest, then it could pick them out of a long duration signal.
-	\subsection{Hypothesis}
+	This purpose of this section was to investigate wether NuPIC could identify a learned transient embedded in a background of noise. If NuPIC was trained on transients of interest and could recognise them, then it could pick them out of a long duration signal.
+	
 		The process was as follows. The algorithm would be trained on a sample transient. After training the learning would be turned off. Then data would be fed in, containing the trained transients and other regions of noise. Error metrics describing how well NuPIC recognised the data could be extracted. These would be high for the noisy regions and low for trained transients that the algorithm recognises. Disabling the learning would stop the algorithm from learning any more patterns in the data. The error metrics used were an average error between the predicted signal and the actual data and the anomaly score detailed in equation \ref{eq:anomaly}.
 		
-	\subsection{description}
-		The algorithm was trained on a sine gaussian repeatedly until it had learnt the signal. Learning was then disabled. Testing was carried out by adding gaussian noise to a signal and calculating average error metrics.The signals used were the flat repeating 0 (of the same length as the training data (20 samples)) and the training data.
-		The following process was related for each signal. Levels for the noise to add to the signal were chosen to be 0.00, 0.05 ,0.10 ,0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, with each being the standard deviation of the generated noise. For each level, Gaussian noise was generated and added to the signal. The signal plus noise was fed into the algorithm. An average error metric was calculated from the predictions generated. An average anomaly score was also calculated. This was repeated with another instance of noise (of the same standard deviation) 100 times and the average errors and average anomaly scores were averaged. This resulted in one average error and one average anomaly score (with error bars for these values) for one level of the added noise. This process was repeated for each level of noise listed above and the results plotted. 
-		The training data used was a sine gaussian with the following attributes. phase=5.6 rad,frequency=2Hz,sampleRate=1/32, duration 1s. As shown in fig \ref{fig:trimmedGlitch1}.
+	\subsection{description\label{experimentDescription}}
+		The sample transient used in training (fig \ref{fig:trimmedGlitch1}) was a a sine gaussian with parameters listed in table \ref{tab:sg}. Samples were trimmed from either end to remove the regions of 0 (5 removed from the front, 6 froth end). Training was carried out by running NuPIC on the sample transient 200 times until it had learnt the signal. Learning was then disabled. Testing was carried out by adding gaussian noise to a signal and calculating average error metrics.The signals used were flat repeating 0 (of the same length as the training data (21 samples)) and the training data.
+		\begin{table}
+			\centering
+			\begin{tabular}{r l}
+				phase& 5.6 rad\\
+				frequency& 2 Hz\\
+				sample rate& $\frac{1}{32}$ Hz\\
+				duration& 1 s\\
+			\end{tabular}
+			\caption{\label{tab:sg}Parameters defining the sine Gaussian used for training.}
+		\end{table}
+		
+		To calculate the average errors the following process was repeated for each signal. Standard deviations of the noise to add to the signal were chosen to be 0.00, 0.05 ,0.10 ,0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50. For each level, Gaussian noise was generated and added to the signal. The signal plus noise was fed into the trained algorithm. An average error metric was calculated from the predictions generated. An average anomaly score was also calculated. This was repeated with another instance of noise (of the same standard deviation) 100 times and the average errors and average anomaly scores were averaged. This resulted in one average error and one average anomaly score (with error bars for these values) for one level of the added noise. This process was repeated for each level of noise listed above and the results plotted (fig \ref{fig:averageError} and fig \ref{fig:averageAnomaly}).
+		
+		The average error was calculated as the average of the absolute value of the difference between the predicted value and the actual data.
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.6\textwidth]{trimmedGlitch1Plot.pdf}
 			\caption{\label{fig:trimmedGlitch1}The training data.}
 		\end{figure}
 		
-		The algorithm was trained by running it through the data 200 times. This value was chosen to be after the average change in synapses slowed. Learning was then disabled.
-		
-		The algorithm was tested on two separate test data. The first was 0 mean Gaussian noise 
 	\subsection{Results}
+		The results of the testing process detailed in the last section are shown in figures \ref{fig:averageError} and \ref{fig:averageAnomaly}. Using the anomaly score was the most effective in distinguishing the two signals. It was able to distinguish the signals up to an added noise of standard deviation 0.15. 
+		An anomaly score of 1 corresponds to an input that was entirely unpredicted. A score of 0 corresponds to an input that was completely predicted. As the noise added to the training data increases the average anomaly increases as more of the individual data points are unpredicted. The flat signal has a score of 1 initially as a sequence of 0s do not appear anywhere in the training data. The score drops initially as the noise increases as there is a higher likelihood of sequences that occurred in the training data occurring.
+		%The signal to noise ratios for the levels of added noise compared to the training data are $\infty$, 71.78, 17.94, 7.98, 4.49, 2.87, 1.99, 1.46, 1.12, 0.89, 0.72. These were calculated by integrating the square of the training data and dividing by the variance of the added noise.
 		
 		\begin{figure}
 			\centering
@@ -228,23 +240,27 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{averageAnomalyPlot.pdf}
-			\caption{\label{fig:averageError}The average error calculated when testing on two different signals (flat signal and the training data) for different levels of added noise.}
+			\caption{\label{fig:averageAnomaly}The average error calculated when testing on two different signals (flat signal and the training data) for different levels of added noise.}
 		\end{figure}
 		
 	\subsection{Issues}
-		 - overgeneralisation - and consequent investigation
-		 - low noise tolerance (signal indistinguishable when noise)
+		One issue found was the tendency for the algorithm to generalise well. Initially the algorithm was trained on the sample transient without the trimming mentioned in section \ref{experimentDescription}. This version had regions of 0 at either end. The result was that when the algorithm was tested, it was able to predict the flat signal well. This led to it being unable to differentiate the flat signal from the training data. Since the algorithm had seen regions of repeating 0 in training, it was able to predict them fairly well when they occurred in testing.
+		
+		This was verified by training the algorithm on the untrimmed sample transient then looking at the sets of active cells. After training learning was disabled. The set of cells that became active during the 0 region of the sample transient matched completely with the set of cells that became active during testing on the flat signal. This shows that the algorithm's internal representation of the 0 region was the same as its internal representation of the flat signal. Hence the 0 regions were causing the unexpectedly high accuracy in the predictions.
 		 
 	\subsection{Discussion}
+		The results shown show how well the algorithm identifies a repeating 0 signal. A more complete analysis would investigate how well the algorithm differentiates the trained data from a wide variety of signals. This would give a much clearer picture of how the algorithm would behave with real data. Further it would allow the performance to be compared to techniques such as matched filtering for identifying signals.
+		
+		Investigate the algorithm parameters
+		Further understand how to best train the algorithm - does adding noise help?
+		Investigate wether you could train it to identify a class of waveforms, would the sequence memory aspect be able to compress the patterns and improve performance?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Additional Material: Using Gravitational Wave Detector Data}
+	Given that the algorithm is commercially used in unsupervised learning of real world data, it was of interest to see how it performed on real data taken from the LIGO observatory. The algorithm was run on some channel data however picking channels to obtain data from and then obtaining this data proved to be difficult.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Additional Investigations}
-	\subsection{Gravitational Wave Detector Data}
-	\subsection{Beta Classification}
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
-	Maybe some things like I had at the end of my talk - general issues in machine learning.
+	%Maybe some things like I had at the end of my talk - general issues in machine learning.
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{References} 
