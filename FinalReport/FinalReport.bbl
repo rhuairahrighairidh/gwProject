@@ -1,0 +1,42 @@
+\providecommand{\newblock}{}
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{{\tt #1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+% Bibliography created with iopart-num v2.0
+% /biblio/bibtex/contrib/iopart-num
+
+\bibitem{saulson_fundamentals_1994}
+Saulson P~R 1994 {\em Fundamentals of interferometric gravitational wave
+  detectors\/} (Singapore ; River Edge, N.J: World Scientific) ISBN 9810218206
+
+\bibitem{logue_inferring_2012}
+Logue J, Ott C~D, Heng I~S, Kalmus P and Scargill J 2012 {\em {arXiv}:1202.3256
+  [astro-ph, physics:gr-qc]\/} {arXiv}: 1202.3256
+  \urlprefix\url{http://arxiv.org/abs/1202.3256}
+
+\bibitem{biswas_application_2013}
+Biswas R, Blackburn L, Cao J, Essick R, Hodge K~A, Katsavounidis E, Kim K, Kim
+  Y~M, Bigot E~O~L, Lee C~H, Oh J~J, Oh S~H, Son E~J, Vaulin R, Wang X and Ye T
+  2013 {\em Physical Review D\/} {\bf 88} ISSN 1550-7998, 1550-2368 {arXiv}:
+  1303.6984 \urlprefix\url{http://arxiv.org/abs/1303.6984}
+
+\bibitem{kim_application_2014}
+Kim K, Harry I~W, Hodge K~A, Kim Y~M, Lee C~H, Lee H~K, Oh J~J, Oh S~H and Son
+  E~J 2014 {\em {arXiv}:1410.6878 [astro-ph, physics:gr-qc]\/} {arXiv}:
+  1410.6878 \urlprefix\url{http://arxiv.org/abs/1410.6878}
+
+\bibitem{nupicGitHub}
+{The Numenta Commnity} 2015 Nupic code repository
+  \urlprefix\url{https://github.com/numenta/nupic}
+
+\bibitem{hawkins_intelligence_2005}
+Hawkins J and Blakeslee S 2005 {\em On intelligence\/} (New York: Henry Holt
+  and Co.) ISBN 0805078533 9780805078534
+
+\bibitem{htmWhitePaper}
+{Numenta, Inc} 2011 {HTM} whitepaper
+  \urlprefix\url{http://numenta.com/learn/hierarchical-temporal-memory-white-paper.html}
+
+\end{thebibliography}

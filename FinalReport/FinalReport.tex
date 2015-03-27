@@ -6,12 +6,12 @@
 \author{Ruaridh O'Donnell}
 \ead{1002205o@student.gla.c.uk}
 \begin{abstract}
-    Due to the low amplitude of gravitational waves, data from gravitational wave detectors is high in noise. A large portion of this noise is transient and of high amplitude. It can be confused with real gradational wave signals. This project is an investigation into whether a recent machine learning algorithm (NuPIC) would be of use in classifying transients. A detailed description of how this algorithm functions is given. The algorithm was trained on a sine gaussian model and tested to see how well it could differentiate the trained signal from background gaussian noise. Up to an SNR of 5.1 it was able to differentiate the signal well, but for higher levels of noise it could not. Notes were made on how the algorithm deals with noise. These could be helpful in future work.
+    Due to the low amplitude of gravitational waves, a gravitational wave signal can become masked by noise sources in the detector. A large portion of this noise is transient and of high amplitude. It can be confused with real gravitational wave signals. This project is an investigation into whether a recent machine learning algorithm (NuPIC) would be of use in classifying noise transients. A detailed description of how this algorithm functions is given. The algorithm was trained on a sine Gaussian model and tested to see how well it could differentiate the trained signal from background Gaussian noise. Up to an SNR of 5.1 it was able to differentiate the signal well, but for higher levels of noise it could not. Notes were made on how the algorithm deals with noise. These could be helpful in future work.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Overview}
-	The aim of this work was to look at the possible use of a a novel unsupervised machine learning algorithm in the search for gravitational waves. The algorithm, NuPIC is used commercially in detecting patterns in time series data. Gravitational wave detectors produce a lot of transient high amplitude noise in their output. This is often correlated with data that measures other aspects of the detector. It was thought that this algorithm could detect these patterns.
+	The aim of this work was to look at the possible use of a a novel unsupervised machine learning algorithm in the characterisation of gravitational wave detector noise. The algorithm, NuPIC is used commercially in detecting patterns in time series data. Gravitational wave detectors produce a lot of transient high amplitude noise in their output. This is often correlated with data that measures other aspects of the detector. It was thought that this algorithm could detect these patterns.
 	
 	The algorithm was tested to see how well it could differentiate a known signal from noise. More work is needed to verify if the algorithm can work with real data.
     
@@ -22,34 +22,35 @@ Advances in astronomy typically follow advances in detector technology. Telescop
 Detecting gravitational waves generates many technical challenges and thus the detectors are complex. This section will cover the relevant feature of the detectors for this project and also cover some of the ways in which machine learning has been used in this field in the past.
 
 	\subsection{Gravitational wave detectors}
-		The gravitational wave detectors in use today are fundamentally Michelson interferometers. The mirrors at either end of the arms are mounted on test masses that move when gravitational waves pass. The output that measures the wave can be thought of as a time series of the power output of the interferometer. In reality modern advanced detectors (such as Advanced LIGO) are considerably more complex but the details do not need to be understood.
+		The gravitational wave detectors in use today are fundamentally Michelson interferometers \cite{saulson_fundamentals_1994}. The mirrors at either end of the arms are mounted on test masses that move when gravitational waves pass. The output that measures the wave can be thought of as a time series of the power output of the interferometer. In reality modern advanced detectors (such as Advanced LIGO) are considerably more complex but the details do not need to be understood.
 
-	The waves detectable from earth have an extremely small effect on the test masses. The detectors need to have advanced noise removal so much of the work in building the detectors has gone into this. However despite the efforts much noise still remains in the signal. This noise can be broadly split into gaussian noise and glitches. Where a glitch means is any high amplitude transient noise. The glitches can be mistaken for real gravitational wave signals.
+	The waves detectable from earth have an extremely small effect on the test masses. The detectors need to have advanced noise removal so much of the work in building the detectors has gone into this. However despite the efforts much noise still remains in the signal. This noise can be broadly split into Gaussian noise and glitches. Where a glitch means is any high amplitude transient noise. The glitches can be mistaken for real gravitational wave signals.
 
 	\subsection{Past attempts at using machine learning methods in gravitational wave searches}
-		Machine learning methods are starting to be used in the field of gravitational wave searches. This section contains a summary of some recent efforts. It should be noted that the algorithms used here are substantially different in operation to NuPIC, the algorithm used in this project.
+		Machine learning methods are starting to be used in the field of gravitational wave searches. This section contains a summary of some recent efforts. It should be noted that the algorithms used here are substantially different in operation to NuPIC, the algorithm used in this project. %This implies that all these papers use machine learning but the first doesn't
 
-		\subsubsection*{Inferring Core Collapse Supernova Physics with Gravitational Waves [5]}
+		\subsubsection*{Inferring Core Collapse Supernova Physics with Gravitational Waves \cite{logue_inferring_2012}}
 			There are different possibilities for how supernova evolve. Each produces a different pattern in the gravitational wave signal. However the waveforms vary enough in each class that that cross-correlation would be impractical. So this paper proposes a method for categorising a signal measured in LIGO into one of the three supernova types using principle component analysis and Bayesian statistics. Principle component analysis has some similarities to the way NuPIC operates.
 			
-		\subsubsection*{Noise Artefact Removal Using Machine learning with Gravitational Waves [2]}
+		\subsubsection*{Noise Artefact Removal Using Machine learning with Gravitational Waves \cite{biswas_application_2013}}
+			%explain that the way we determine if we have a real gravitational wave signal we look for a signal that is coherent in multiple detectors.That is why glitches that occur in multiple detectors at the same time can become a problem. 
 			Glitches occur frequently enough that they show up in concurrence between two detectors. This causes problems when trying to detect gravitational waves across multiple detectors. Glitches often often occur in correlation with other readings taken from the detector. Hence automated machine learning methods can be used to distinguish them from real gravitational wave signals.
 
 			Data was split into two categories. The first; glitches that weren't gravitational waves, i.e. glitches that didn't have any coincidence in other detectors. This was composed of all glitches that were measured, with the assumption that this set contained no gravitational signals. The other was clean data composed of random samples from when the gravitational wave channel was quiet.
 
 			Similar performance was achieved using several different algorithms, suggesting that any improvements would be from including additional data in the classification.
 
-		\subsubsection*{Application of Artificial Neural Network to Search for Gravitational-Wave Signals Associated with Short Gamma-Ray Bursts [4]}
+		\subsubsection*{Application of Artificial Neural Network to Search for Gravitational-Wave Signals Associated with Short Gamma-Ray Bursts \cite{kim_application_2014}}
 			A fairly basic application of artificial neural networks to categorise glitches.
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{NuPIC: A Novel Machine Learning Algorithm}
-	The Numenta Platform for Intelligent Computing (NuPIC) is the machine learning algorithm used in this project. It was developed privately by the company Numenta for use in analysis of streaming data. As of January 2014 it is in use in a commercial product ``Grok'' but the core algorithm has been open sourced.
+	The Numenta Platform for Intelligent Computing (NuPIC) is the machine learning algorithm used in this project. It was developed privately by the company Numenta for use in analysis of streaming data. As of January 2014 it is in use in a commercial product ``Grok'' but the core algorithm has been open sourced \cite{nupicGitHub}.
 		
 	This section will go over the main features of this algorithm, followed by a more detailed overview of it's inner workings. This will be illustrated with a simple example. Finally the specific implementation details used in this project will be covered as well as a short analysis of the noise characteristics of the algorithm.
 
 	\subsection{Backround}
-		Machine learning algorithms automatically learn patterns in collections of data. This automatic discovery of the underlying statistics in data make them useful across a wide class of domains. Most algorithms operate in a similar manner. They are trained on a collection of data until the patterns are discovered, and then they are used to evaluate new data (that was not in the training set). For example, a collection of vectors grouped together into classes can be used by a KNN classifier. A new vector can be evaluated by this algorithm to see which class it belongs to. There is a wide variety in how machine learning algorithms carry out this process. NuPIC was modelled on a theory of how the neocortex (a part of the mammalian brain) functions. This theory is called Hierarchical Temporal Memory (HTM).
+		Machine learning algorithms automatically learn patterns in collections of data. This automatic discovery of the underlying statistics in data make them useful across a wide class of domains. Most algorithms operate in a similar manner. They are trained on a collection of data until the patterns are discovered, and then they are used to evaluate new data (that was not in the training set). For example, a collection of vectors grouped together into classes can be used by a KNN classifier. A new vector can be evaluated by this algorithm to see which class it belongs to. There is a wide variety in how machine learning algorithms carry out this process. NuPIC was modelled on a theory of how the neocortex (a part of the mammalian brain) functions. This theory is called Hierarchical Temporal Memory (HTM) \cite{hawkins_intelligence_2005}.
 		
 		The neocortex is the part of the brain associated with higher intelligent thinking and long term memory. It consists of a sheet across the surface of the brain, approximately 2 mm thick, composed of around six layers. Different areas of the sheet carry out different functions (image processing, language, higher level thought, etc). The neocortex is has very regular structure of cells across these different areas. Vernon Mountcastle propositioned that despite the different functions, the neocortex is running the same algorithm across all areas. This is the basis of NuPIC. It is the very first part of an implementation of this algorithm.
 	
@@ -63,7 +64,7 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		Internally NuPIC is a neural network. However it the details of this network are more complex than neural networks commonly used.
 		
 	\subsection{Algorithm details}
-		This section borrows heavily from the description in the Numenta white paper which contains a more thorough explanation of the algorithms complete with pseudocode. NuPIC undergoes three steps each time a sample of data is fed in. These are:
+		This section borrows heavily from the description in the Numenta white paper which contains a more thorough explanation of the algorithms complete with pseudocode \cite{htmWhitePaper}. NuPIC undergoes three steps each time a sample of data is fed in. These are:
 		\begin{enumerate}
 			\item Form a sparse distributed representation of the input
 			\item Form a representation of the input in the context of previous inputs
@@ -192,8 +193,8 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\end{itemize}
 
 	\subsection{Noise characteristics}
-		Data from gravitational wave detectors has gaussian noise that disrupts the signal. This noise can cause problems for NuPIC. Consider the case where the algorithm has been learning on some data and learning has stabilised. The algorithm will have learnt the patterns as best it can. If more of this data is fed in with added gaussian noise, some points will be perturbed form their true position and will be different from what the algorithm expects them to be. This will cause the anomaly score to be high for those points. If there is enough noise then it will become impossible to tell if the algorithm recognises the data as the anomaly score will be continuously high. Since gravitational wave data is noisy it is useful to understand how NuPIC counteracts noise.
-		Some brief investigations were done. It was found that there are two main mechnisms:
+		Data from gravitational wave detectors has Gaussian noise that disrupts the signal. This noise can cause problems for NuPIC. Consider the case where the algorithm has been learning on some data and learning has stabilised. The algorithm will have learnt the patterns as best it can. If more of this data is fed in with added Gaussian noise, some points will be perturbed form their true position and will be different from what the algorithm expects them to be. This will cause the anomaly score to be high for those points. If there is enough noise then it will become impossible to tell if the algorithm recognises the data as the anomaly score will be continuously high. Since gravitational wave data is noisy it is useful to understand how NuPIC counteracts noise.
+		Some brief investigations were done. It was found that there are two main mechanisms:
 		\subsubsection*{Input overlap between similar values}
 			If a sample from a time series is perturbed from its true value by a small amount (relative to the amplitude of the signal) then the binary vector representation of the perturbed sample will be close to the binary vector representation of the true sample (with the closeness measured by hamming distance). This closeness will result in a similar set of columns becoming active, which results in a similar set of cells becoming active. So the algorithms internal representation of the perturbed input will be close (by hamming distance) to the representation of the true input.
 		\subsubsection*{Multiple predictions}
@@ -203,10 +204,10 @@ Detecting gravitational waves generates many technical challenges and thus the d
 \section{Transient Identfication}
 	This purpose of this section was to investigate wether NuPIC could identify a learned transient embedded in a background of noise. If NuPIC was trained on transients of interest and could recognise them, then it could pick them out of a long duration signal.
 	
-		The process was as follows. The algorithm would be trained on a sample transient. After training the learning would be turned off. Then data would be fed in, containing the trained transients and other regions of noise. Error metrics describing how well NuPIC recognised the data could be extracted. These would be high for the noisy regions and low for trained transients that the algorithm recognises. Disabling the learning would stop the algorithm from learning any more patterns in the data. The error metrics used were an average error between the predicted signal and the actual data and the anomaly score detailed in equation \ref{eq:anomaly}.
+		The process was as follows. The algorithm would be trained on a sample transient. After training the learning would be turned off. Then data would be fed in, containing the trained transients and other regions of noise. Error metrics describing how well NuPIC recognised the data could be extracted. These would be high for the noisy regions and low for trained transients that the algorithm recognises. Learning is disabling to stop the algorithm from learning any more patterns in the data. The error metrics used were an average error between the predicted signal and the actual data and the anomaly score detailed in equation \ref{eq:anomaly}.
 		
 	\subsection{description\label{experimentDescription}}
-		The sample transient used in training (fig \ref{fig:trimmedGlitch1}) was a a sine gaussian with parameters listed in table \ref{tab:sg}. Samples were trimmed from either end to remove the regions of 0 (5 removed from the front, 6 froth end). Training was carried out by running NuPIC on the sample transient 200 times until it had learnt the signal. Learning was then disabled. Testing was carried out by adding gaussian noise to a signal and calculating average error metrics.The signals used were flat repeating 0 (of the same length as the training data (21 samples)) and the training data.
+		The sample transient used in training (fig \ref{fig:trimmedGlitch1}) was a a sine Gaussian with parameters listed in table \ref{tab:sg}. Data points close to 0 were trimmed from either end end of the sample (5 removed from the front, 6 from the end). Training was carried out by running NuPIC on the sample transient 200 times until the synapse permanences had stabilised. Learning was then disabled. Testing was carried out by adding Gaussian noise to a signal and calculating error metrics.The signals used were flat repeating 0 (of the same length as the training data (21 samples)) and the training data.
 		\begin{table}
 			\centering
 			\begin{tabular}{r l}
@@ -218,9 +219,9 @@ Detecting gravitational waves generates many technical challenges and thus the d
 			\caption{\label{tab:sg}Parameters defining the sine Gaussian used for training.}
 		\end{table}
 		
-		To calculate the average errors the following process was repeated for each signal. Standard deviations of the noise to add to the signal were chosen to be 0.00, 0.05 ,0.10 ,0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50. For each level, Gaussian noise was generated and added to the signal. The signal plus noise was fed into the trained algorithm. An average error metric was calculated from the predictions generated. An average anomaly score was also calculated. This was repeated with another instance of noise (of the same standard deviation) 100 times and the average errors and average anomaly scores were averaged. This resulted in one average error and one average anomaly score (with error bars for these values) for one level of the added noise. This process was repeated for each level of noise listed above and the results plotted (fig \ref{fig:averageError} and fig \ref{fig:averageAnomaly}).
+		To calculate the errors metrics, the following process was repeated for each signal. Standard deviations of the noise to add to the signal were chosen to be 0.00, 0.05 ,0.10 ,0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50. For each level, Gaussian noise was generated and added to the signal. The signal plus noise was fed into the trained algorithm. An average error metric was calculated from the predictions generated. An average anomaly score was also calculated. This was repeated with another instance of noise (of the same standard deviation) 100 times and the average errors and average anomaly scores were averaged. This resulted in one average error and one average anomaly score (with error bars for these values) for one level of the added noise. This process was repeated for each level of noise listed above and the results plotted (fig \ref{fig:averageError} and fig \ref{fig:averageAnomaly}).
 		
-		The average error was calculated as the average of the absolute value of the difference between the predicted value and the actual data.
+		The average error was calculated as the average of the absolute value of the difference between the predicted value and the actual data. The anomaly score was calculated as detailed in equation \ref{eq:anomaly}.
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.6\textwidth]{trimmedGlitch1Plot.pdf}
@@ -228,9 +229,11 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\end{figure}
 		
 	\subsection{Results}
-		The results of the testing process detailed in the last section are shown in figures \ref{fig:averageError} and \ref{fig:averageAnomaly}. Using the anomaly score was the most effective in distinguishing the two signals. It was able to distinguish the signals up to an added noise of standard deviation 0.15. 
+		The results of the testing process detailed in the last section are shown in figures \ref{fig:averageError} and \ref{fig:averageAnomaly}. The anomaly score was the most effective in distinguishing the two signals. It was able to distinguish the signals up to an added noise of standard deviation 0.15. 
 		An anomaly score of 1 corresponds to an input that was entirely unpredicted. A score of 0 corresponds to an input that was completely predicted. As the noise added to the training data increases the average anomaly increases as more of the individual data points are unpredicted. The flat signal has a score of 1 initially as a sequence of 0s do not appear anywhere in the training data. The score drops initially as the noise increases as there is a higher likelihood of sequences that occurred in the training data occurring.
 		%The signal to noise ratios for the levels of added noise compared to the training data are $\infty$, 71.78, 17.94, 7.98, 4.49, 2.87, 1.99, 1.46, 1.12, 0.89, 0.72. These were calculated by integrating the square of the training data and dividing by the variance of the added noise.
+		%Why does't the error one work?
+		%Why do they have that the general shape?
 		
 		\begin{figure}
 			\centering
@@ -244,35 +247,31 @@ Detecting gravitational waves generates many technical challenges and thus the d
 		\end{figure}
 		
 	\subsection{Issues}
-		One issue found was the tendency for the algorithm to generalise well. Initially the algorithm was trained on the sample transient without the trimming mentioned in section \ref{experimentDescription}. This version had regions of 0 at either end. The result was that when the algorithm was tested, it was able to predict the flat signal well. This led to it being unable to differentiate the flat signal from the training data. Since the algorithm had seen regions of repeating 0 in training, it was able to predict them fairly well when they occurred in testing.
+		One issue found was the tendency for the algorithm to generalise well. Initially the algorithm was trained on the sample transient without the trimming mentioned in section \ref{experimentDescription}. This version had a sequence of points close to 0 at either end. The result was that when the algorithm was tested, it was able to predict the flat signal well. This led to it being unable to differentiate the flat signal from the training data. Since the algorithm had seen sequences of 0 in training, it was able to predict them when they occurred in testing.
 		
-		This was verified by training the algorithm on the untrimmed sample transient then looking at the sets of active cells. After training learning was disabled. The set of cells that became active during the 0 region of the sample transient matched completely with the set of cells that became active during testing on the flat signal. This shows that the algorithm's internal representation of the 0 region was the same as its internal representation of the flat signal. Hence the 0 regions were causing the unexpectedly high accuracy in the predictions.
+		This was verified by training the algorithm on the untrimmed sample transient and then looking at the sets of active cells. The set of cells that became active during the 0 region of the sample transient matched completely with the set of cells that became active during testing on the flat signal. This shows that the algorithm's internal representation of the 0 region was the same as its internal representation of the flat signal. Hence the 0 regions were causing the unexpectedly high accuracy in the predictions.
 		 
 	\subsection{Discussion}
 		The results shown show how well the algorithm identifies a repeating 0 signal. A more complete analysis would investigate how well the algorithm differentiates the trained data from a wide variety of signals. This would give a much clearer picture of how the algorithm would behave with real data. Further it would allow the performance to be compared to techniques such as matched filtering for identifying signals.
 		
-		Investigate the algorithm parameters
-		Further understand how to best train the algorithm - does adding noise help?
-		Investigate wether you could train it to identify a class of waveforms, would the sequence memory aspect be able to compress the patterns and improve performance?
+		%Investigate the algorithm parameters
+		%Further understand how to best train the algorithm - does adding noise help?
+		%Investigate wether tou could train it to identify a class of waveforms, would the sequence memory aspect be able to compress the patterns and improve performance?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Additional Material: Using Gravitational Wave Detector Data}
 	Given that the algorithm is commercially used in unsupervised learning of real world data, it was of interest to see how it performed on real data taken from the LIGO observatory. The algorithm was run on some channel data however picking channels to obtain data from and then obtaining this data proved to be difficult.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
+	%Sum up everything - This project was looking at the use of the machine learning algorithm NuPIC in gravitational wave detector noise characterisation. It was tested to see how well it could differentiate a trained signal from Gaussian noise. 
+	%Sentence about future work
 	%Maybe some things like I had at the end of my talk - general issues in machine learning.
+	Some Text \cite{saulson_fundamentals_1994}
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{References} 
-
-This is some text. This is how you do citations: \cite{}. Type the first few letters and press F5.
-%:FIG:matplotlibTest
-\begin{center}
-    \begin{figure}
-            \includegraphics[width=\textwidth]{testMatplotlibPlot.pdf}
-            \caption{A really exciting plot}
-    \end{figure}
-\end{center}
+\section*{References}
+\bibliographystyle{iopart-num}
+\bibliography{references}
 
 \end{document}
 
